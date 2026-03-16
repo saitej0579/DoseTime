@@ -164,9 +164,27 @@
 
         function displayReminder(time) {
             let reminderList = document.getElementById("reminderList");
+
             let reminderItem = document.createElement("div");
             reminderItem.className = "reminder-item";
-            reminderItem.textContent = `📌 Reminder set for ${time}`;
+
+            let text = document.createElement("span");
+            text.textContent = `📌 Reminder set for ${time}`;
+
+            let deleteBtn = document.createElement("button");
+            deleteBtn.textContent = "❌";
+            deleteBtn.style.marginLeft = "10px";
+            deleteBtn.style.width = "40px";
+            deleteBtn.style.background = "red";
+
+            deleteBtn.onclick = function () {
+                reminderItem.remove();
+                removeReminderFromStorage(time);
+            };
+
+            reminderItem.appendChild(text);
+            reminderItem.appendChild(deleteBtn);
+
             reminderList.appendChild(reminderItem);
         }
 
@@ -174,6 +192,11 @@
             notificationSound.play().catch(error => {
                 console.log("⚠ Audio play blocked. Click the page once.");
             });
+        }
+        function removeReminderFromStorage(time) {
+            let reminders = JSON.parse(localStorage.getItem("reminders")) || [];
+            reminders = reminders.filter(reminder => reminder.time !== time);
+            localStorage.setItem("reminders", JSON.stringify(reminders));
         }
     </script>
 </body>
